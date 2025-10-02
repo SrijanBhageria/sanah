@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/AppError';
-import { logger } from '../utils/logger';
+import { logger } from '../logger/logger';
 import { env } from '../config/env';
 
 /**
@@ -31,11 +31,25 @@ export const errorHandler = (
     statusCode = 400;
     message = 'Invalid ID format';
     code = 'INVALID_INPUT';
-  } else if (error.name === 'MongoError' && (error as unknown as { code: number }).code === 11000) {
+  } else if ((error.name === 'MongoError' || error.name === 'MongoServerError') && (error as unknown as { code: number }).code === 11000) {
     // Handle MongoDB duplicate key errors
     statusCode = 409;
-    message = 'Resource already exists';
-    code = 'RESOURCE_ALREADY_EXISTS';
+    const field = Object.keys((error as any).keyPattern || {})[0] || 'field';
+    
+    // Provide more specific error messages for common fields
+    if (field === 'slug') {
+      message = 'A blog with this slug already exists. Please choose a different slug.';
+    } else if (field === 'blogId') {
+      message = 'A blog with this ID already exists.';
+    } else if (field === 'typeId') {
+      message = 'A blog type with this ID already exists.';
+    } else if (field === 'name') {
+      message = 'A blog type with this name already exists. Please choose a different name.';
+    } else {
+      message = `${field} already exists. Please choose a different value.`;
+    }
+    
+    code = 'DUPLICATE_KEY_ERROR';
   } else if (error.name === 'JsonWebTokenError') {
     // Handle JWT errors
     statusCode = 401;

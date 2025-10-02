@@ -1,22 +1,28 @@
-import { connectDB } from './config/db';
-import { logger } from './utils/logger';
+import { connectDB, initializeCollections } from './mongodb/index';
+import { logger } from './logger/logger';
 
 /**
- * Initialize all services and connections
+ * Main application entry point
+ * Initializes all services and starts the server
  */
-export const initializeApp = async (): Promise<void> => {
+const main = async (): Promise<void> => {
   try {
     logger.info('Starting application initialization...');
 
-    // Connect to MongoDB
+    // Step 1: Connect to MongoDB
     logger.info('Connecting to MongoDB...');
     await connectDB();
     logger.info('MongoDB connected successfully');
 
-    // Add other initializations here
-    // await initializeRedis();
-    // await initializeEmailService();
-    // await initializeFileStorage();
+    // Step 2: Initialize collections and DAOs
+    logger.info('Initializing collections and DAOs...');
+    await initializeCollections();
+    logger.info('Collections and DAOs initialized successfully');
+
+    // Step 3: Start Express server
+    logger.info('Starting Express server...');
+    const { startServer } = await import('./express/index');
+    startServer();
 
     logger.info('Application initialization completed successfully');
   } catch (error) {
@@ -28,15 +34,13 @@ export const initializeApp = async (): Promise<void> => {
 /**
  * Graceful shutdown handler
  */
-export const gracefulShutdown = async (): Promise<void> => {
+const gracefulShutdown = async (): Promise<void> => {
   try {
     logger.info('Starting graceful shutdown...');
     
     // Close database connections
-    // await mongoose.connection.close();
-    
-    // Close other services
-    // await redisClient.quit();
+    const { disconnectDB } = await import('./mongodb/index');
+    await disconnectDB();
     
     logger.info('Graceful shutdown completed');
     process.exit(0);
@@ -57,3 +61,6 @@ process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
   process.exit(1);
 });
+
+// Start the application
+main();

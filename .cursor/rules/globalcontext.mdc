@@ -1,5 +1,141 @@
 ---
-description:
-globs:
 alwaysApply: true
 ---
+You are an expert backend engineer working on a Node.js + TypeScript backend with enterprise architecture. 
+All code you generate MUST comply with the following rules:
+
+ARCHITECTURE
+- Use the Enterprise MVCS + DAO pattern: Model → DAO → Service → Controller → Route.
+- Models go in /src/models. Define data schemas and export TypeScript interfaces.
+- DAOs go in /src/dao. All database operations and data access logic live here.
+- Services go in /src/services. All business logic and orchestration live here.
+- Controllers go in /src/controllers. They only handle HTTP requests/responses and call services.
+- Routes go in /src/routes. Use Express.Router and import controllers.
+- Middleware go in /src/middleware. Include validation, authentication, and error handling.
+- Validators go in /src/validators. Use Joi schemas for request validation.
+- Logger go in /src/logger. Centralized logging system.
+- Constants such as error codes/messages go in /src/constants.
+- Database initialization go in /src/database (or /src/mongodb, /src/postgres, etc.).
+- Express app setup go in /src/express.
+- Main entry point go in /src/init.ts.
+
+BEST PRACTICES
+- Always use async/await.
+- Always wrap controller logic in try/catch. In case of error, call next(error) to trigger the error middleware.
+- Always validate request bodies, params, and queries using Joi schemas and a validate middleware BEFORE the controller executes.
+- Always use Winston logger from /src/logger/logger.ts instead of console.log.
+- Import environment variables from /src/config/env.ts.
+- Use named exports for all modules. Avoid default exports.
+- No inline database calls inside controllers or services. Only call DAOs.
+- Use centralized error handling with AppError and error middleware.
+- Add TypeScript types for Request, Response, NextFunction wherever possible.
+- Use .env file and src/config/env.ts for environment variables.
+- Keep controllers thin and focused. Put logic in services.
+- Keep services focused on business logic. Put data access in DAOs.
+- DAOs must handle all database operations and return clean, typed responses.
+- Use ESLint + Prettier consistent style (semi-colons according to repo config).
+- Add comments for non-obvious code or complex logic.
+- **Always write reusable code**:
+  - Reuse interfaces wherever possible. Avoid creating new interfaces unnecessarily.
+  - Prefer generic utility types or shared types in /src/models or /src/types.
+  - Keep code DRY (Don't Repeat Yourself).
+- **DAO Pattern**:
+  - All DAOs must extend BaseDAO for common operations.
+  - DAOs should be database-agnostic and use the database abstraction layer.
+  - Each entity should have its own DAO class.
+  - DAOs are initialized and exported from the database module.
+
+LOGGING
+- Use Winston logger (src/logger/logger.ts) for all logs.
+- Log significant events and errors with logger.info / logger.error.
+- No console.log anywhere in the code.
+
+ERROR HANDLING
+- Create a centralized error constants file at /src/constants/error.constants.ts.
+- Use AppError (src/utils/AppError.ts) to throw typed errors from services and DAOs.
+- The global error middleware at /src/middleware/error.middleware.ts must catch all errors and send a unified JSON response with status code, message, and code.
+
+VALIDATORS
+- All Joi schemas must go in /src/validators.
+- One validator file per resource (e.g., video.validator.ts, user.validator.ts).
+- Always export multiple named validators from a single file.
+- Reuse existing interfaces and enums from models wherever possible (e.g., VideoType, UserRole).
+- Keep schemas DRY: reuse sub-schemas for repeated fields.
+- Do not include business logic in validators.
+- Validators should validate request body, query, and params as needed.
+- Validators must work with validate.middleware.ts for route validation.
+- All validator files should be TypeScript and named using snake-case (resource.validator.ts).
+
+DATABASE PATTERN
+- Database-specific code goes in /src/database (or /src/mongodb, /src/postgres, etc.).
+- Create a BaseDAO class with common CRUD operations.
+- Each entity should have its own DAO extending BaseDAO.
+- Database connection and DAO initialization should be centralized.
+- Collection/table names should be defined in an enum for type safety.
+- DAOs should be exported from the database module for use in services.
+- Database initialization should include collection/table setup and default data.
+
+
+ENVIRONMENT CONFIG
+- Environment variables live in a .env file.
+- src/config/env.ts loads and exports them.
+
+FORMATTING & STYLE
+- Use consistent naming: snake-case for files, PascalCase for classes, camelCase for variables/functions.
+- Prefer interfaces and types over “any.”
+- Keep file responsibilities narrow.
+- Use Prettier defaults: 2-space indentation, single quotes, trailing commas.
+- All imports must be grouped: external modules first, then internal modules.
+- Always add JSDoc comments for services and controllers explaining their purpose.
+- TypeScript strict mode is on.
+- Do not use 'any' type unless absolutely necessary.
+- **Write reusable code and types**: Avoid creating unnecessary new interfaces, reuse existing ones wherever possible.
+
+EXAMPLE FILE STRUCTURE
+src/
+├─ init.ts                          # Main application entry point
+├─ express/
+│  └─ index.ts                      # Express server setup
+├─ config/
+│  └─ env.ts                        # Environment variables
+├─ constants/
+│  └─ error.constants.ts            # Error codes and messages
+├─ controllers/
+│  └─ page.controller.ts            # HTTP request handlers
+├─ services/
+│  └─ page.service.ts               # Business logic
+├─ dao/
+│  ├─ baseDao.ts                    # Base DAO with common operations
+│  └─ page.dao.ts                   # Entity-specific DAO
+├─ models/
+│  ├─ page.model.ts                 # Data models and interfaces
+│  └─ database.ts                   # Collection/table enums
+├─ database/                        # Database-specific code
+│  └─ index.ts                      # Database connection and DAO exports
+├─ routes/
+│  └─ page.routes.ts                # API route definitions
+├─ validators/
+│  └─ page.validator.ts             # Request validation schemas
+├─ middleware/
+│  ├─ validate.middleware.ts        # Validation middleware
+│  └─ error.middleware.ts           # Error handling middleware
+├─ logger/
+│  └─ logger.ts                     # Centralized logging
+└─ utils/
+    └─ AppError.ts                  # Custom error class
+
+OUTPUT RULES
+- Always put new files in the correct folders automatically.
+- Always write TypeScript (not JavaScript).
+- Always export functions as named exports.
+- Do not include business logic in controllers or routes.
+- Do not include database operations in controllers or services - use DAOs.
+- Do not use console.log — always use logger.
+- Use proper TypeScript types (Request, Response, NextFunction from express).
+- Keep formatting consistent according to the rules in FORMATTING & STYLE.
+- **Always write reusable interfaces and types; avoid creating new ones unnecessarily.**
+- **Follow the DAO pattern**: Controllers → Services → DAOs → Database.
+- **Database-agnostic**: Write DAOs that can work with any database through the abstraction layer.
+
+GOAL
+Maintain a clean, scalable, production-ready backend structure that follows enterprise patterns, enforces code reuse, uses proper separation of concerns with DAO pattern, and is easy to maintain and extend across different database technologies.

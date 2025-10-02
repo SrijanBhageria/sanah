@@ -31,7 +31,16 @@ const transports = [
       winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
       winston.format.colorize({ all: true }),
       winston.format.printf(
-        (info) => `${info['timestamp']} ${info.level}: ${info.message}`,
+        (info) => {
+          const message = info.message;
+          const metadata = info[Symbol.for('splat')] as any[] || [];
+          const hasMetadata = Array.isArray(metadata) && metadata.length > 0 && typeof metadata[0] === 'object';
+          
+          if (hasMetadata) {
+            return `${info['timestamp']} ${info.level}: ${message} ${JSON.stringify(metadata[0], null, 2)}`;
+          }
+          return `${info['timestamp']} ${info.level}: ${message}`;
+        },
       ),
     ),
   }),
