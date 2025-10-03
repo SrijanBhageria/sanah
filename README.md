@@ -1,32 +1,37 @@
 # Sanah Backend API
 
-A Node.js + TypeScript backend API built with Express, MongoDB, and following the MVCS (Model-View-Controller-Service) architecture pattern.
+A Node.js + TypeScript backend API built with Express, MongoDB, and following the Enterprise MVCS + DAO architecture pattern. This API provides a complete CMS (Content Management System) for managing website content including landing pages, blog posts, and unified page content.
 
 ## 🏗️ Project Structure
 
 ```
 src/
-├── main.ts                    # Application entry point
-├── init.ts                    # Initialization orchestrator
-├── app.ts                     # Express application setup
+├── init.ts                    # Main application entry point
+├── express/
+│   └── index.ts               # Express server setup
 ├── config/
-│   ├── env.ts                 # Environment variables management
-│   └── db.ts                  # Database connection configuration
+│   └── env.ts                 # Environment variables management
 ├── constants/
 │   └── error.constants.ts     # Error codes and messages
 ├── controllers/               # HTTP request handlers
 ├── services/                  # Business logic layer
+├── dao/                       # Data Access Objects (Database layer)
 ├── models/                    # Mongoose schemas and TypeScript interfaces
+│   ├── pageTypes.ts           # Page type enums and interfaces
+│   └── mongodb.ts             # Collection configuration
 ├── routes/                    # Express route definitions
 ├── validators/                # Joi validation schemas
-├── middlewares/
+├── middleware/                # Express middleware
 │   ├── error.middleware.ts    # Global error handling
 │   ├── validate.middleware.ts # Request validation
-│   └── auth.middleware.ts     # Authentication & authorization
+│   ├── rateLimiter.middleware.ts # Rate limiting
+│   └── audit.middleware.ts    # Security audit logging
+├── logger/
+│   └── logger.ts              # Winston logging configuration
 └── utils/
-    ├── logger.ts              # Winston logging configuration
     ├── AppError.ts            # Custom error class
-    └── helpers.ts             # Utility functions
+    ├── idGenerator.ts         # UUID generation
+    └── sanitizer.ts           # XSS protection
 ```
 
 ## 🚀 Getting Started
@@ -58,11 +63,11 @@ src/
    Update `.env` with your configuration:
    ```env
    NODE_ENV=development
-   PORT=3000
+   PORT=5050
    MONGODB_URI=mongodb://localhost:27017/sanah
    JWT_SECRET=your-super-secret-jwt-key
    JWT_EXPIRES_IN=7d
-   CORS_ORIGIN=http://localhost:3000
+   CORS_ORIGIN=http://localhost:5050
    LOG_LEVEL=info
    ```
 
@@ -525,8 +530,43 @@ GET /health
 
 ### Base URL
 
-- **Development**: `http://localhost:3000`
-- **API Base**: `http://localhost:3000/api/v1`
+- **Development**: `http://localhost:5050`
+- **API Base**: `http://localhost:5050`
+
+### Available APIs
+
+#### 1. Blog API
+- **GET** `/blog/getTypesWithBlogs` - Get all blog types with blogs
+- **GET** `/blog/getBlogsByType` - Get blogs by type with pagination
+- **GET** `/blog/getBlogByBlogId` - Get specific blog by ID
+- **GET** `/blog/getBlogTypes` - Get all blog types
+- **POST** `/blog/createBlog` - Create new blog
+- **POST** `/blog/updateBlog` - Update existing blog
+- **POST** `/blog/deleteBlog` - Soft delete blog
+- **POST** `/blog/createBlogType` - Create new blog type
+- **POST** `/blog/updateBlogType` - Update blog type
+- **POST** `/blog/deleteBlogType` - Soft delete blog type
+
+#### 2. Unified Page Content API
+- **GET** `/page/getPageContent?pageType=story` - Get story page content
+- **GET** `/page/getPageContent?pageType=leadershipTeam` - Get leadership team content
+- **GET** `/page/getPageContent?pageType=landing` - Get landing page content
+- **GET** `/page/getAllPageContent` - Get all page content
+- **POST** `/page/createOrUpdatePageContent` - Create or update any page content
+
+### Page Types Supported
+- `story` - Story page with carousel items
+- `leadershipTeam` - Leadership team with member cards
+- `landing` - Landing page with numbers and statistics
+
+### Security Features
+- ✅ **XSS Protection** - All text inputs are sanitized
+- ✅ **Rate Limiting** - 1000 requests per 15 minutes (general), 100 requests per 15 minutes (write operations)
+- ✅ **Input Validation** - Joi schemas validate all request data
+- ✅ **Audit Logging** - Security events are logged for monitoring
+- ✅ **Soft Delete** - Data is never permanently deleted
+
+For detailed API documentation with examples, see [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
 
 ## 🚀 Deployment
 
@@ -545,7 +585,7 @@ npm start
 Ensure all required environment variables are set in production:
 
 - `NODE_ENV=production`
-- `PORT=3000`
+- `PORT=5050`
 - `MONGODB_URI=mongodb://your-production-db`
 - `JWT_SECRET=your-production-secret`
 - `CORS_ORIGIN=https://your-frontend-domain.com`

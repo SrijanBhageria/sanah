@@ -4,9 +4,9 @@ import { logger } from '../logger/logger';
 import { COLLECTION_CONFIG } from '../models/mongodb';
 
 // Import DAOs
-import { LandingPageDAO } from '../dao/landingPage.dao';
 import { BlogTypeDAO } from '../dao/blogType.dao';
 import { BlogDAO } from '../dao/blog.dao';
+import { PageContentDAO } from '../dao/pageContent.dao';
 
 /**
  * MongoDB connection configuration
@@ -15,17 +15,17 @@ const mongoConfig = {
   uri: env.MONGODB_URI,
   options: {
     maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
+    serverSelectionTimeoutMS: 5050,
+    socketTimeoutMS: 45050,
   },
 };
 
 /**
  * DAO instances - will be initialized after connection
  */
-export let landingPageDAO: LandingPageDAO;
 export let blogTypeDAO: BlogTypeDAO;
 export let blogDAO: BlogDAO;
+export let pageContentDAO: PageContentDAO;
 
 /**
  * Connect to MongoDB
@@ -63,9 +63,9 @@ export const initializeCollections = async (): Promise<void> => {
     logger.info('Initializing collections and DAOs...');
 
     // Initialize DAOs
-    landingPageDAO = new LandingPageDAO();
     blogTypeDAO = new BlogTypeDAO();
     blogDAO = new BlogDAO();
+    pageContentDAO = new PageContentDAO();
 
     // Initialize collections
     await Promise.all(

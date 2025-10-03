@@ -50,12 +50,12 @@ app.get('/health', (_req, res) => {
 });
 
 // Import routes
-import landingPageRoutes from '../routes/landingPage.routes';
 import blogRoutes from '../routes/blog.routes';
+import pageContentRoutes from '../routes/pageContent.routes';
 
 // API routes
-app.use('/landing', landingPageRoutes);
 app.use('/blog', blogRoutes);
+app.use('/page', pageContentRoutes);
 
 // 404 handler
 app.use(notFoundHandler);

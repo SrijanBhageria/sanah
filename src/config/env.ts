@@ -6,7 +6,7 @@ dotenv.config();
 export const env = {
   // Server Configuration
   NODE_ENV: process.env['NODE_ENV'] || 'development',
-  PORT: parseInt(process.env['PORT'] || '3000', 10),
+  PORT: parseInt(process.env['PORT'] || '5050', 10),
 
   // Database Configuration
   MONGODB_URI: process.env['MONGODB_URI'] || 'mongodb://localhost:27017/marketing_cms',
@@ -16,7 +16,7 @@ export const env = {
   JWT_EXPIRES_IN: process.env['JWT_EXPIRES_IN'] || '7d',
 
   // CORS Configuration
-  CORS_ORIGIN: process.env['CORS_ORIGIN'] || 'http://localhost:3000',
+  CORS_ORIGIN: process.env['CORS_ORIGIN'] || 'http://localhost:5050',
 
   // Logging
   LOG_LEVEL: process.env['LOG_LEVEL'] || 'http',

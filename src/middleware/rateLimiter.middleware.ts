@@ -79,29 +79,29 @@ export const blogTypeWriteLimiter = rateLimit({
   },
 });
 
+
+
 /**
- * Landing page operations rate limiter: 100 requests per 15 minutes
- * For landing page updates (less frequent but important)
+ * Page content write operations rate limiter: 100 requests per 15 minutes
  */
-export const landingPageLimiter = rateLimit({
+export const pageContentLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs for landing page operations
+  max: 100, // Limit each IP to 100 requests per windowMs for page content operations
   message: {
     success: false,
-    message: 'Too many landing page operations from this IP, please try again later.',
-    code: 'LANDING_PAGE_RATE_LIMIT_EXCEEDED',
+    message: 'Too many page content operations from this IP, please try again later.',
+    code: 'PAGE_CONTENT_RATE_LIMIT_EXCEEDED',
     data: null,
   },
-  standardHeaders: true,
-  legacyHeaders: false,
   handler: (req, res) => {
-    logger.warn(`Landing page rate limit exceeded for IP: ${req.ip} on ${req.method} ${req.url}`);
+    logger.warn(`Page content rate limit exceeded for IP: ${req.ip} on ${req.method} ${req.url}`);
     res.status(429).json({
       success: false,
-      message: 'Too many landing page operations from this IP, please try again later.',
-      code: 'LANDING_PAGE_RATE_LIMIT_EXCEEDED',
+      message: 'Too many page content operations from this IP, please try again later.',
+      code: 'PAGE_CONTENT_RATE_LIMIT_EXCEEDED',
       data: null,
     });
   },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
-

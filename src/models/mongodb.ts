@@ -1,12 +1,14 @@
 
+import { PageType } from './pageTypes';
+
 /**
  * MongoDB Collection Names Enum
  * Single source of truth for all collection names
  */
 export enum MongoCollection {
-  LANDING_PAGE = 'landing_page',
   BLOG_TYPES = 'blogtypes',
   BLOGS = 'blogs',
+  PAGE_CONTENT = 'page_content',
 }
 
 /**
@@ -22,38 +24,6 @@ export interface CollectionInit {
  * Collection initialization configuration
  */
 export const COLLECTION_CONFIG: CollectionInit[] = [
-  {
-    name: MongoCollection.LANDING_PAGE,
-    createIndexes: async () => {
-      // Add indexes for landing page if needed
-    },
-    initializeDefaultData: async () => {
-      // Import the DAO here to avoid circular dependency
-      const { landingPageDAO } = await import('../mongodb/index');
-      
-      // Check if landing page already exists
-      const existingPage = await landingPageDAO.getLandingPage();
-      
-      if (!existingPage) {
-        // Create default landing page data
-        const defaultData = {
-          header: "Welcome to Our Platform",
-          subtitle: "Your trusted partner for digital solutions and innovation",
-          numbers: [
-            { value: "100+", label: "Happy Clients" },
-            { value: "50+", label: "Projects Completed" },
-            { value: "5+", label: "Years Experience" },
-            { value: "24/7", label: "Support Available" }
-          ]
-        };
-        
-        await landingPageDAO.createOrUpdateLandingPage(defaultData);
-        console.log('✅ Default landing page data created successfully');
-      } else {
-        console.log('ℹ️  Landing page already exists, skipping default data creation');
-      }
-    },
-  },
   {
     name: MongoCollection.BLOG_TYPES,
     createIndexes: async () => {
@@ -146,6 +116,132 @@ export const COLLECTION_CONFIG: CollectionInit[] = [
         }
       } else {
         console.log('ℹ️  Blog posts already exist, skipping default data creation');
+      }
+    },
+  },
+  {
+    name: MongoCollection.PAGE_CONTENT,
+    createIndexes: async () => {
+      // Indexes are created in the model schema
+    },
+    initializeDefaultData: async () => {
+      const { pageContentDAO } = await import('../mongodb/index');
+      
+      // Check if page content already exists
+      const existingStoryPage = await pageContentDAO.getPageContent(PageType.STORY);
+      const existingLeadershipTeam = await pageContentDAO.getPageContent(PageType.LEADERSHIP_TEAM);
+      const existingLandingPage = await pageContentDAO.getPageContent(PageType.LANDING);
+      
+      // Create default story page if it doesn't exist
+      if (!existingStoryPage) {
+        const storyData = {
+          pageType: PageType.STORY,
+          title: "Our Story",
+          slug: "our-story",
+          content: "Discover the journey that brought us here and the vision that drives us forward.",
+          items: [
+            {
+              title: "Our Foundation",
+              description: "Founded in 2020 with a vision to revolutionize digital solutions and transform how businesses operate in the digital age."
+            },
+            {
+              title: "Growth & Expansion",
+              description: "Expanded to serve 100+ clients across multiple industries, delivering innovative solutions that drive real business value."
+            },
+            {
+              title: "Our Commitment",
+              description: "Committed to innovation, quality, and customer satisfaction in everything we do, ensuring exceptional results for our partners."
+            },
+            {
+              title: "Future Vision",
+              description: "Looking forward to an exciting future of growth and impact, continuing to push the boundaries of what's possible."
+            }
+          ],
+          btnTxt: [
+            { buttonText: "Learn More" },
+            { buttonText: "Get Started" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(storyData);
+        console.log('✅ Default story page content created successfully');
+      } else {
+        console.log('ℹ️  Story page content already exists, skipping default data creation');
+      }
+      
+      // Create default leadership team if it doesn't exist
+      if (!existingLeadershipTeam) {
+        const leadershipData = {
+          pageType: PageType.LEADERSHIP_TEAM,
+          title: "Leadership Team",
+          slug: "leadership-team",
+          subtitle: "Meet the experienced professionals leading our firm",
+          items: [
+            {
+              title: "Sarah Mitchell",
+              description: "Chief Executive Officer"
+            },
+            {
+              title: "David Chen",
+              description: "Chief Investment Officer"
+            },
+            {
+              title: "Emily Rodriguez",
+              description: "Head of Capital Markets"
+            },
+            {
+              title: "Michael Thompson",
+              description: "Managing Director, M&A"
+            }
+          ],
+          btnTxt: [
+            { buttonText: "Contact Team" },
+            { buttonText: "View Profiles" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(leadershipData);
+        console.log('✅ Default leadership team content created successfully');
+      } else {
+        console.log('ℹ️  Leadership team content already exists, skipping default data creation');
+      }
+      
+      // Create default landing page if it doesn't exist
+      if (!existingLandingPage) {
+        const landingData = {
+          pageType: PageType.LANDING,
+          title: "Welcome to Our Platform",
+          slug: "home",
+          subtitle: "Your trusted partner for digital solutions and innovation",
+          numbers: [
+            {
+              value: "100+",
+              label: "Happy Clients"
+            },
+            {
+              value: "50+",
+              label: "Projects Completed"
+            },
+            {
+              value: "5+",
+              label: "Years Experience"
+            },
+            {
+              value: "24/7",
+              label: "Support Available"
+            }
+          ],
+          btnTxt: [
+            { buttonText: "Get Started" },
+            { buttonText: "Learn More" },
+            { buttonText: "Contact Us" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(landingData);
+        console.log('✅ Default landing page content created successfully');
+      } else {
+        console.log('ℹ️  Landing page content already exists, skipping default data creation');
       }
     },
   },
