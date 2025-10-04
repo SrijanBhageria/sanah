@@ -243,6 +243,220 @@ export const COLLECTION_CONFIG: CollectionInit[] = [
       } else {
         console.log('ℹ️  Landing page content already exists, skipping default data creation');
       }
+      
+      // Create default vision page if it doesn't exist
+      const existingVisionPage = await pageContentDAO.getPageContent(PageType.VISION);
+      if (!existingVisionPage) {
+        const visionData = {
+          pageType: PageType.VISION,
+          title: "Our Vision",
+          slug: "our-vision",
+          content: "We envision a future where technology seamlessly integrates with human potential, creating opportunities for growth, innovation, and positive impact.",
+          items: [
+            {
+              title: "Innovation First",
+              description: "Pioneering cutting-edge solutions that transform industries and create lasting value."
+            },
+            {
+              title: "Human-Centered Design",
+              description: "Building technology that enhances human capabilities and improves quality of life."
+            },
+            {
+              title: "Sustainable Growth",
+              description: "Creating long-term value through responsible innovation and ethical business practices."
+            }
+          ],
+          btnTxt: [
+            { buttonText: "Learn More" },
+            { buttonText: "Join Our Mission" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(visionData);
+        console.log('✅ Default vision page content created successfully');
+      } else {
+        console.log('ℹ️  Vision page content already exists, skipping default data creation');
+      }
+      
+      // Create default investment strategy page if it doesn't exist
+      const existingInvestmentStrategyPage = await pageContentDAO.getPageContent(PageType.INVESTMENT_STRATEGY);
+      if (!existingInvestmentStrategyPage) {
+        const investmentStrategyData = {
+          pageType: PageType.INVESTMENT_STRATEGY,
+          title: "Investment Strategy",
+          slug: "investment-strategy",
+          content: "Our comprehensive investment approach combines rigorous analysis, market expertise, and innovative strategies to deliver superior returns for our clients.",
+          items: [
+            {
+              title: "Value Investing",
+              description: "Identifying undervalued assets with strong fundamentals and long-term growth potential."
+            },
+            {
+              title: "Growth Opportunities",
+              description: "Capitalizing on emerging markets and innovative companies with disruptive potential."
+            },
+            {
+              title: "Risk Management",
+              description: "Implementing sophisticated risk controls to protect capital while maximizing returns."
+            },
+            {
+              title: "Portfolio Diversification",
+              description: "Building balanced portfolios across asset classes, sectors, and geographic regions."
+            }
+          ],
+          btnTxt: [
+            { buttonText: "Learn More" },
+            { buttonText: "Schedule Consultation" },
+            { buttonText: "View Performance" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(investmentStrategyData);
+        console.log('✅ Default investment strategy page content created successfully');
+      } else {
+        console.log('ℹ️  Investment strategy page content already exists, skipping default data creation');
+      }
+      
+      // Create default partners page if it doesn't exist
+      const existingPartnersPage = await pageContentDAO.getPageContent(PageType.PARTNERS);
+      if (!existingPartnersPage) {
+        const partnersData = {
+          pageType: PageType.PARTNERS,
+          title: "Our Partners",
+          slug: "our-partners",
+          subtitle: "Strategic alliances that drive our success",
+          items: [
+            {
+              title: "Technology Partners",
+              description: "Leading technology companies that provide cutting-edge solutions and infrastructure."
+            },
+            {
+              title: "Financial Institutions",
+              description: "Established banks and financial services firms that enhance our market reach."
+            },
+            {
+              title: "Industry Leaders",
+              description: "Top-tier companies across various sectors that share our commitment to excellence."
+            },
+            {
+              title: "Research Organizations",
+              description: "Academic and research institutions that contribute to our knowledge base and innovation."
+            }
+          ],
+          btnTxt: [
+            { buttonText: "Become a Partner" },
+            { buttonText: "View All Partners" },
+            { buttonText: "Partnership Benefits" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(partnersData);
+        console.log('✅ Default partners page content created successfully');
+      } else {
+        console.log('ℹ️  Partners page content already exists, skipping default data creation');
+      }
+      
+      // Create default insights page if it doesn't exist
+      const existingInsightsPage = await pageContentDAO.getPageContent(PageType.INSIGHTS);
+      if (!existingInsightsPage) {
+        const insightsData = {
+          pageType: PageType.INSIGHTS,
+          title: "Market Insights",
+          slug: "market-insights",
+          subtitle: "Stay informed with our latest research, market analysis, and investment insights from our team of financial experts.",
+          btnTxt: [
+            { buttonText: "Read All Insights" },
+            { buttonText: "Subscribe to Updates" },
+            { buttonText: "Download Reports" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(insightsData);
+        console.log('✅ Default insights page content created successfully');
+      } else {
+        console.log('ℹ️  Insights page content already exists, skipping default data creation');
+      }
+      
+      // Create default success stories page if it doesn't exist
+      const existingSuccessStoriesPage = await pageContentDAO.getPageContent(PageType.SUCCESS_STORIES);
+      if (!existingSuccessStoriesPage) {
+        const successStoriesData = {
+          pageType: PageType.SUCCESS_STORIES,
+          title: "Our Success Stories",
+          slug: "our-success-stories",
+          subtitle: "Discover our proven track record of delivering exceptional results for clients across diverse industries. Our success is measured by the success of our clients.",
+          btnTxt: [
+            { buttonText: "Proven track record" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(successStoriesData);
+        console.log('✅ Default success stories page content created successfully');
+      } else {
+        console.log('ℹ️  Success stories page content already exists, skipping default data creation');
+      }
+      
+      // Create default performance metrics page if it doesn't exist
+      const existingPerformanceMetricsPage = await pageContentDAO.getPageContent(PageType.PERFORMANCE_METRICS);
+      if (!existingPerformanceMetricsPage) {
+        const performanceMetricsData = {
+          pageType: PageType.PERFORMANCE_METRICS,
+          title: "Performance Metrics",
+          slug: "performance-metrics",
+          numbers: [
+            {
+              value: "127",
+              label: "Total Deals"
+            },
+            {
+              value: "$8.2B+",
+              label: "Deal Value"
+            },
+            {
+              value: "98.5%",
+              label: "Success Rate"
+            },
+            {
+              value: "4.9/5",
+              label: "Client Rating"
+            },
+            {
+              value: "+15%",
+              label: "YoY Growth"
+            }
+          ],
+          btnTxt: [
+            { buttonText: "2024" },
+            { buttonText: "2023" },
+            { buttonText: "2022" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(performanceMetricsData);
+        console.log('✅ Default performance metrics page content created successfully');
+      } else {
+        console.log('ℹ️  Performance metrics page content already exists, skipping default data creation');
+      }
+      
+      // Create default join success page if it doesn't exist
+      const existingJoinSuccessPage = await pageContentDAO.getPageContent(PageType.JOIN_SUCCESS);
+      if (!existingJoinSuccessPage) {
+        const joinSuccessData = {
+          pageType: PageType.JOIN_SUCCESS,
+          title: "Ready to Join Our Success Story?",
+          slug: "join-success",
+          subtitle: "Let our proven track record work for you. Contact us today to discuss how we can help achieve your investment goals.",
+          btnTxt: [
+            { buttonText: "Start Your Journey" },
+            { buttonText: "View insights" }
+          ]
+        };
+        
+        await pageContentDAO.createOrUpdatePageContent(joinSuccessData);
+        console.log('✅ Default join success page content created successfully');
+      } else {
+        console.log('ℹ️  Join success page content already exists, skipping default data creation');
+      }
     },
-  },
+  },  
 ];
