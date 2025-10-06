@@ -5,13 +5,14 @@ import joi from 'joi';
  */
 export const createBlogValidator = joi.object({
   title: joi.string().required().trim().max(200),
-  slug: joi.string().required().trim().max(200).lowercase(),
+  slug: joi.string().optional().trim().max(200).lowercase(),
   content: joi.string().required(),
   excerpt: joi.string().required().trim().max(500),
   author: joi.string().required().trim().max(100),
   typeId: joi.string().required(),
   image: joi.string().uri().optional().allow(''),
   tags: joi.array().items(joi.string().trim().max(50)).optional().default([]),
+  readTime: joi.number().integer().min(1).max(120).optional(),
   isPublished: joi.boolean().optional().default(false),
 });
 
@@ -27,6 +28,7 @@ export const updateBlogValidator = joi.object({
   typeId: joi.string().optional(),
   image: joi.string().uri().optional().allow(''),
   tags: joi.array().items(joi.string().trim().max(50)).optional(),
+  readTime: joi.number().integer().min(1).max(120).optional(),
   isPublished: joi.boolean().optional(),
 }).min(1);
 

@@ -16,7 +16,7 @@ export const env = {
   JWT_EXPIRES_IN: process.env['JWT_EXPIRES_IN'] || '7d',
 
   // CORS Configuration
-  CORS_ORIGIN: process.env['CORS_ORIGIN'] || 'http://localhost:3500',
+  CORS_ORIGIN: process.env['CORS_ORIGIN'] || '*',
 
   // Logging
   LOG_LEVEL: process.env['LOG_LEVEL'] || 'http',

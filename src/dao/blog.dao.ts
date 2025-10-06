@@ -86,7 +86,8 @@ export class BlogDAO extends BaseDAO<IBlog> {
                   image: 1,
                   tags: 1,
                   publishedAt: 1,
-                  viewCount: 1
+                  viewCount: 1,
+                  readTime: 1
                 }
               }
             ],
@@ -293,6 +294,54 @@ export class BlogDAO extends BaseDAO<IBlog> {
       };
     } catch (error) {
       logger.error(`Error searching blogs with term "${searchTerm}":`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Soft delete all blogs by typeId and return their IDs (highly optimized)
+   */
+  async deleteBlogsByTypeId(typeId: string): Promise<string[]> {
+    try {
+      // Use aggregation pipeline to get IDs and perform update in single operation
+      const result = await this.model.aggregate([
+        {
+          $match: { typeId, isDeleted: false }
+        },
+        {
+          $project: { blogId: 1, _id: 0 }
+        },
+        {
+          $group: {
+            _id: null,
+            blogIds: { $push: '$blogId' },
+            count: { $sum: 1 }
+          }
+        }
+      ]);
+
+      const blogIds = result.length > 0 ? result[0].blogIds : [];
+      
+      // Perform soft delete only if blogs exist - use bulkWrite for better performance
+      if (blogIds.length > 0) {
+        await this.model.bulkWrite([
+          {
+            updateMany: {
+              filter: { typeId, isDeleted: false },
+              update: { 
+                $set: { 
+                  isDeleted: true, 
+                  deletedAt: new Date() 
+                } 
+              }
+            }
+          }
+        ]);
+      }
+      
+      return blogIds;
+    } catch (error) {
+      logger.error(`Error soft deleting blogs by typeId ${typeId}:`, error);
       throw error;
     }
   }

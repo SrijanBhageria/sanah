@@ -4,18 +4,19 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface IBlog extends Document {
   _id: string;
   blogId: string;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt: string;
-  author: string;
-  typeId: string;
+  title?: string;
+  slug?: string;
+  content?: string;
+  excerpt?: string;
+  author?: string;
+  typeId?: string;
   image?: string;
-  tags: string[];
-  isPublished: boolean;
+  tags?: string[];
+  isPublished?: boolean;
   publishedAt?: Date;
-  viewCount: number;
-  isDeleted: boolean;
+  viewCount?: number;
+  readTime?: number; // in minutes
+  isDeleted?: boolean;
   deletedAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -32,13 +33,13 @@ const blogSchema = new Schema<IBlog>(
     },
     title: {
       type: String,
-      required: [true, 'Blog title is required'],
+      required: false,
       trim: true,
       maxlength: [200, 'Blog title cannot exceed 200 characters'],
     },
     slug: {
       type: String,
-      required: [true, 'Blog slug is required'],
+      required: false,
       trim: true,
       unique: true,
       lowercase: true,
@@ -46,23 +47,23 @@ const blogSchema = new Schema<IBlog>(
     },
     content: {
       type: String,
-      required: [true, 'Blog content is required'],
+      required: false,
     },
     excerpt: {
       type: String,
-      required: [true, 'Blog excerpt is required'],
+      required: false,
       trim: true,
       maxlength: [500, 'Blog excerpt cannot exceed 500 characters'],
     },
     author: {
       type: String,
-      required: [true, 'Blog author is required'],
+      required: false,
       trim: true,
       maxlength: [100, 'Author name cannot exceed 100 characters'],
     },
     typeId: {
       type: String,
-      required: [true, 'Blog type is required'],
+      required: false,
     },
     image: {
       type: String,
@@ -75,14 +76,20 @@ const blogSchema = new Schema<IBlog>(
     }],
     isPublished: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     publishedAt: {
       type: Date,
     },
     viewCount: {
       type: Number,
-      default: 0,
+      default: 1,
+    },
+    readTime: {
+      type: Number,
+      required: false,
+      min: [1, 'Read time must be at least 1 minute'],
+      max: [120, 'Read time cannot exceed 120 minutes'],
     },
     isDeleted: {
       type: Boolean,

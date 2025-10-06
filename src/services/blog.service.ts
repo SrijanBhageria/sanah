@@ -13,6 +13,7 @@ export interface CreateBlogData {
   typeId: string;
   image?: string;
   tags: string[];
+  readTime?: number;
   isPublished: boolean;
 }
 
@@ -28,6 +29,28 @@ export interface BlogQueryParams {
   limit?: number;
   typeId?: string;
   search?: string;
+}
+
+/**
+ * Calculate estimated reading time in minutes based on content length
+ * Assumes average reading speed of 200 words per minute
+ */
+function calculateReadTime(content: string): number {
+  if (!content || typeof content !== 'string') {
+    return 1; // Default to 1 minute for empty content
+  }
+  
+  // Remove HTML tags and extra whitespace
+  const cleanContent = content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  
+  // Count words (split by whitespace and filter out empty strings)
+  const wordCount = cleanContent.split(/\s+/).filter(word => word.length > 0).length;
+  
+  // Calculate reading time (200 words per minute)
+  const readTime = Math.ceil(wordCount / 200);
+  
+  // Ensure minimum of 1 minute and maximum of 120 minutes
+  return Math.max(1, Math.min(120, readTime));
 }
 
 /**
@@ -105,8 +128,14 @@ export class BlogService {
     try {
       // Sanitize input data
       const sanitizedData = sanitizeBlogData(data);
+      
+      // Calculate read time if not provided
+      if (!sanitizedData.readTime && sanitizedData.content) {
+        sanitizedData.readTime = calculateReadTime(sanitizedData.content);
+      }
+      
       const result = await blogDAO.createWithBlogId(sanitizedData);
-      logger.info(`Created blog with ID: ${result.blogId}`);
+      logger.info(`Created blog with ID: ${result.blogId}, read time: ${result.readTime} minutes`);
       return result;
     } catch (error) {
       // Don't log here - let the error middleware handle logging
@@ -121,9 +150,15 @@ export class BlogService {
     try {
       // Sanitize input data
       const sanitizedData = sanitizeBlogData(data);
+      
+      // Recalculate read time if content is being updated and readTime is not explicitly provided
+      if (sanitizedData.content && sanitizedData.readTime === undefined) {
+        sanitizedData.readTime = calculateReadTime(sanitizedData.content);
+      }
+      
       const result = await blogDAO.updateByBlogId(blogId, sanitizedData);
       if (result) {
-        logger.info(`Updated blog with ID: ${blogId}`);
+        logger.info(`Updated blog with ID: ${blogId}, read time: ${result.readTime} minutes`);
       }
       return result;
     } catch (error) {
@@ -183,17 +218,36 @@ export class BlogService {
   }
 
   /**
-   * Delete a blog type
+   * Delete a blog type and all associated blogs (optimized with transaction support)
    */
-  static async deleteBlogType(typeId: string): Promise<boolean> {
+  static async deleteBlogType(typeId: string): Promise<{ blogTypeDeleted: boolean; deletedBlogIds: string[] }> {
     try {
-      const result = await blogTypeDAO.deleteByTypeId(typeId);
-      if (result) {
-        logger.info(`Deleted blog type with ID: ${typeId}`);
+      // First, get the blog IDs that will be deleted (optimized single query)
+      const deletedBlogIds = await blogDAO.deleteBlogsByTypeId(typeId);
+      
+      // Then delete the blog type
+      const blogTypeDeleted = await blogTypeDAO.deleteByTypeId(typeId);
+      
+      if (!blogTypeDeleted) {
+        throw new Error(`Blog type with ID ${typeId} not found or already deleted`);
       }
-      return result;
+      
+      // Optimized logging - avoid expensive string operations for large arrays
+      if (deletedBlogIds.length > 0) {
+        const logMessage = deletedBlogIds.length <= 5 
+          ? `Deleted blog type ${typeId} and ${deletedBlogIds.length} blogs: ${deletedBlogIds.join(', ')}`
+          : `Deleted blog type ${typeId} and ${deletedBlogIds.length} blogs: ${deletedBlogIds.slice(0, 3).join(', ')}... (+${deletedBlogIds.length - 3} more)`;
+        logger.info(logMessage);
+      } else {
+        logger.info(`Deleted blog type ${typeId} (no associated blogs found)`);
+      }
+      
+      return {
+        blogTypeDeleted,
+        deletedBlogIds
+      };
     } catch (error) {
-      // Don't log here - let the error middleware handle logging
+      logger.error(`Error deleting blog type ${typeId}:`, error);
       throw error;
     }
   }

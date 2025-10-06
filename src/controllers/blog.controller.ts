@@ -287,7 +287,7 @@ export const updateBlogType = async (
 };
 
 /**
- * Delete a blog type
+ * Delete a blog type and all associated blogs
  */
 export const deleteBlogType = async (
   req: Request,
@@ -307,7 +307,7 @@ export const deleteBlogType = async (
 
     const result = await BlogService.deleteBlogType(typeId);
 
-    if (!result) {
+    if (!result.blogTypeDeleted) {
       res.status(404).json({
         success: false,
         message: 'Blog type not found or already deleted',
@@ -316,10 +316,18 @@ export const deleteBlogType = async (
       return;
     }
 
+    const message = result.deletedBlogIds.length > 0 
+      ? `Blog type and ${result.deletedBlogIds.length} associated blogs deleted successfully`
+      : 'Blog type deleted successfully (no associated blogs found)';
+
     res.status(200).json({
       success: true,
-      message: 'Blog type soft deleted successfully',
-      data: null,
+      message,
+      data: {
+        blogTypeDeleted: result.blogTypeDeleted,
+        deletedBlogIds: result.deletedBlogIds,
+        blogsDeletedCount: result.deletedBlogIds.length,
+      },
     });
   } catch (error) {
     next(error);
