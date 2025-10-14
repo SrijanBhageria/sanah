@@ -1,5 +1,5 @@
 # Multi-stage build for optimized production image
-FROM node:26-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:26-alpine AS production
+FROM node:20-alpine AS production
 
 # Create app user for security
 RUN addgroup -g 1001 -S nodejs && \
