@@ -23,7 +23,7 @@ export const env = {
 } as const;
 
 // Validate required environment variables
-const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'] as const;
+const requiredEnvVars = ['MONGODB_URI'] as const;
 
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
