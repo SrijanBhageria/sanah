@@ -22,7 +22,7 @@ app.use((helmet as any)());
 
 // CORS configuration - Allow all origins for development
 app.use(
-  cors.default({
+  (cors as any)({
     origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Logging middleware
 app.use(
-  morgan.default(':method :url :status :response-time ms - :res[content-length]', {
+  (morgan as any)(':method :url :status :response-time ms - :res[content-length]', {
     stream: {
       write: (message: string) => logger.http(message.trim()),
     },
