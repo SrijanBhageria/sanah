@@ -5,7 +5,7 @@
     "outDir": "./bin",
 
     // Environment Settings
-    "module": "ES2022",
+    "module": "commonjs",
     "target": "es2020",
     "lib": ["es2020"],
     "types": ["node"],
@@ -29,7 +29,6 @@
 
     // Recommended Options
     "strict": true,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
