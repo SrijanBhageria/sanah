@@ -1,10 +1,3 @@
-import { JSDOM } from 'jsdom';
-import * as DOMPurify from 'dompurify';
-
-// Create a JSDOM window for DOMPurify
-const window = new JSDOM('').window;
-const purify = DOMPurify(window as any);
-
 /**
  * Sanitize HTML content to prevent XSS attacks
  * @param dirty - The potentially unsafe HTML string
@@ -15,17 +8,18 @@ export const sanitizeHtml = (dirty: string): string => {
     return '';
   }
   
-  return purify.sanitize(dirty, {
-    ALLOWED_TAGS: [
-      'p', 'br', 'strong', 'em', 'u', 'b', 'i', 's', 'strike',
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'ul', 'ol', 'li', 'blockquote', 'pre', 'code',
-      'a', 'img', 'div', 'span'
-    ],
-    ALLOWED_ATTR: ['href', 'title', 'alt', 'src', 'class', 'id'],
-    ALLOW_DATA_ATTR: false,
-    KEEP_CONTENT: true,
-  });
+  // Simple HTML sanitization - remove script tags and dangerous attributes
+  return dirty
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+    .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, '')
+    .replace(/<link\b[^<]*(?:(?!<\/link>)<[^<]*)*<\/link>/gi, '')
+    .replace(/<meta\b[^<]*(?:(?!<\/meta>)<[^<]*)*<\/meta>/gi, '')
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/vbscript:/gi, '')
+    .replace(/data:/gi, '');
 };
 
 /**
