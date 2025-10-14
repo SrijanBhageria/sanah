@@ -7,6 +7,8 @@ import { COLLECTION_CONFIG } from '../models/mongodb';
 import { BlogTypeDAO } from '../dao/blogType.dao';
 import { BlogDAO } from '../dao/blog.dao';
 import { PageContentDAO } from '../dao/pageContent.dao';
+import { FooterDAO } from '../dao/footer.dao';
+import { InvestmentCardDAO } from '../dao/investmentCard.dao';
 
 /**
  * MongoDB connection configuration
@@ -26,6 +28,8 @@ const mongoConfig = {
 export let blogTypeDAO: BlogTypeDAO;
 export let blogDAO: BlogDAO;
 export let pageContentDAO: PageContentDAO;
+export let footerDAO: FooterDAO;
+export let investmentCardDAO: InvestmentCardDAO;
 
 /**
  * Connect to MongoDB
@@ -66,6 +70,8 @@ export const initializeCollections = async (): Promise<void> => {
     blogTypeDAO = new BlogTypeDAO();
     blogDAO = new BlogDAO();
     pageContentDAO = new PageContentDAO();
+    footerDAO = new FooterDAO();
+    investmentCardDAO = new InvestmentCardDAO();
 
     // Initialize collections
     await Promise.all(

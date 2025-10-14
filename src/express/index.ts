@@ -54,10 +54,14 @@ app.get('/health', (_req, res) => {
 // Import routes
 import blogRoutes from '../routes/blog.routes';
 import pageContentRoutes from '../routes/pageContent.routes';
+import { footerRoutes } from '../routes/footer.routes';
+import { investmentCardRoutes } from '../routes/investmentCard.routes';
 
 // API routes
 app.use('/blog', blogRoutes);
 app.use('/page', pageContentRoutes);
+app.use('/footer', footerRoutes);
+app.use('/cards', investmentCardRoutes);
 
 // 404 handler
 app.use(notFoundHandler);

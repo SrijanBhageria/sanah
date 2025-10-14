@@ -9,6 +9,8 @@ export enum MongoCollection {
   BLOG_TYPES = 'blogtypes',
   BLOGS = 'blogs',
   PAGE_CONTENT = 'page_content',
+  FOOTER = 'footer',
+  INVESTMENT_CARDS = 'investment_cards',
 }
 
 /**
@@ -458,5 +460,156 @@ export const COLLECTION_CONFIG: CollectionInit[] = [
         console.log('ℹ️  Join success page content already exists, skipping default data creation');
       }
     },
-  },  
+  },
+  {
+    name: MongoCollection.FOOTER,
+    createIndexes: async () => {
+      // Indexes are created in the model schema
+    },
+    initializeDefaultData: async () => {
+      const { footerDAO } = await import('../mongodb/index');
+      
+      // Check if footer already exists
+      const existingFooter = await footerDAO.getFooter();
+      
+      if (!existingFooter) {
+        // Create default footer content
+        const defaultFooter = {
+          companyName: 'Elluminate Capital',
+          companyDescription: 'Professional investment banking services with a focus on delivering exceptional value to our clients through strategic advisory and comprehensive financial solutions.',
+          contact: {
+            email: 'info@elluminatecapital.com',
+            phone: '+1 (555) 123-4567',
+            address: '123 Financial District, New York, NY 10004',
+          },
+          sections: [
+            {
+              title: 'Services',
+              links: [
+                { text: 'Investment Advisory', url: '/services/investment-advisory' },
+                { text: 'Capital Markets', url: '/services/capital-markets' },
+                { text: 'M&A Advisory', url: '/services/ma-advisory' },
+                { text: 'Wealth Management', url: '/services/wealth-management' },
+              ],
+            },
+            {
+              title: 'Company',
+              links: [
+                { text: 'About Us', url: '/about' },
+                { text: 'Our Team', url: '/team' },
+                { text: 'Careers', url: '/careers' },
+                { text: 'News & Insights', url: '/news' },
+              ],
+            },
+            {
+              title: 'Resources',
+              links: [
+                { text: 'Market Reports', url: '/reports' },
+                { text: 'Research', url: '/research' },
+                { text: 'Client Portal', url: '/portal' },
+                { text: 'Contact Us', url: '/contact' },
+              ],
+            },
+          ],
+          socialMedia: [
+            { platform: 'LinkedIn', url: 'https://linkedin.com/company/elluminate-capital', icon: 'linkedin' },
+            { platform: 'Twitter', url: 'https://twitter.com/elluminatecap', icon: 'twitter' },
+            { platform: 'Facebook', url: 'https://facebook.com/elluminatecapital', icon: 'facebook' },
+          ],
+          backToTopText: 'Back to Top',
+          copyrightText: '© 2025 Elluminate Capital. All rights reserved.',
+          legalLinks: [
+            { text: 'Privacy Policy', url: '/privacy' },
+            { text: 'Terms of Service', url: '/terms' },
+          ],
+        };
+        
+        await footerDAO.createOrUpdateFooter(defaultFooter);
+        console.log('✅ Default footer content created successfully');
+      } else {
+        console.log('ℹ️  Footer content already exists, skipping default data creation');
+      }
+    },
+  },
+  {
+    name: MongoCollection.INVESTMENT_CARDS,
+    createIndexes: async () => {
+      // Indexes are created in the model schema
+    },
+    initializeDefaultData: async () => {
+      const { investmentCardDAO } = await import('../mongodb/index');
+      
+      // Check if investment cards already exist
+      const existingCards = await investmentCardDAO.getAllInvestmentCards();
+      
+      if (existingCards.length === 0) {
+        // Create sample investment cards
+        const sampleCards = [
+          {
+            companyName: '100ms',
+            companyLogo: 'https://example.com/100ms-logo.png',
+            sections: [
+              {
+                sectionId: '550e8400-e29b-41d4-a716-446655440001',
+                title: 'DESCRIPTION',
+                content: 'Live-video infrastructure for developers',
+                order: 1
+              },
+              {
+                sectionId: '550e8400-e29b-41d4-a716-446655440002',
+                title: 'FOUNDERS',
+                content: [
+                  { item: 'Kshitij Gupta' },
+                  { item: 'Aniket Behera' },
+                  { item: 'Sarvesh Dwivedi' }
+                ],
+                order: 2
+              },
+              {
+                sectionId: '550e8400-e29b-41d4-a716-446655440003',
+                title: 'INITIAL INVESTMENT',
+                content: 'Seed in 2021',
+                order: 3
+              }
+            ]
+          },
+          {
+            companyName: 'TechCorp',
+            companyLogo: 'https://example.com/techcorp-logo.png',
+            sections: [
+              {
+                sectionId: '550e8400-e29b-41d4-a716-446655440004',
+                title: 'DESCRIPTION',
+                content: 'AI-powered business solutions',
+                order: 1
+              },
+              {
+                sectionId: '550e8400-e29b-41d4-a716-446655440005',
+                title: 'KEY FEATURES',
+                content: [
+                  { item: 'Machine Learning' },
+                  { item: 'Data Analytics' },
+                  { item: 'Automation' }
+                ],
+                order: 2
+              },
+              {
+                sectionId: '550e8400-e29b-41d4-a716-446655440006',
+                title: 'MARKET POSITION',
+                content: 'Series A funding completed. Leading provider of AI solutions for enterprise customers with strong growth trajectory.',
+                order: 3
+              }
+            ]
+          }
+        ];
+        
+        for (const cardData of sampleCards) {
+          await investmentCardDAO.createOrUpdateInvestmentCard(cardData);
+        }
+        console.log('✅ Sample investment cards created successfully');
+      } else {
+        console.log('ℹ️  Investment cards already exist, skipping default data creation');
+      }
+    },
+  },
 ];
