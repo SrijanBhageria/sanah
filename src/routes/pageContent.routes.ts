@@ -10,7 +10,7 @@ import {
 } from '../validators/pageContent.validator';
 import { validateBody, validateQuery } from '../middleware/validate.middleware';
 import { generalLimiter, pageContentLimiter } from '../middleware/rateLimiter.middleware';
-import { securityAuditLogger } from '../middleware/audit.middleware';
+import { auditLogger, securityAuditLogger } from '../middleware/audit.middleware';
 
 const router = Router();
 
@@ -29,6 +29,7 @@ router.post(
 // GET /page/getPageContent?pageType=story - Get page content by type
 router.get(
   '/getPageContent',
+  auditLogger,
   validateQuery(pageTypeQueryValidator),
   getPageContent,
 );
@@ -36,6 +37,7 @@ router.get(
 // GET /page/getAllPageContent - Get all page content
 router.get(
   '/getAllPageContent',
+  auditLogger,
   getAllPageContent,
 );
 

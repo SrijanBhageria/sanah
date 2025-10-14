@@ -7,7 +7,7 @@ import {
 import { validateBody, validateQuery } from '../middleware/validate.middleware';
 import { createOrUpdateInvestmentCardSchema, cardIdValidator } from '../validators/investmentCard.validator';
 import { generalLimiter, pageContentLimiter } from '../middleware/rateLimiter.middleware';
-import { securityAuditLogger } from '../middleware/audit.middleware';
+import { auditLogger, securityAuditLogger } from '../middleware/audit.middleware';
 
 const router = Router();
 
@@ -26,12 +26,14 @@ router.post(
 // GET /cards/getAllInvestmentCards - Get all investment cards
 router.get(
   '/getAllInvestmentCards',
+  auditLogger,
   getAllInvestmentCards,
 );
 
 // GET /cards/getInvestmentCardById?id=cardId - Get investment card by ID
 router.get(
   '/getInvestmentCardById',
+  auditLogger,
   validateQuery(cardIdValidator),
   getInvestmentCardById,
 );
