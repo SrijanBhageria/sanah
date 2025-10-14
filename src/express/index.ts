@@ -1,8 +1,8 @@
 import * as express from 'express';
 import { Application } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
+import * as cors from 'cors';
+import * as helmet from 'helmet';
+import * as morgan from 'morgan';
 import { env } from '../config/env';
 import { logger } from '../logger/logger';
 import { errorHandler, notFoundHandler } from '../middleware/error.middleware';
