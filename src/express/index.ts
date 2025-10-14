@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Application } from 'express';
 import * as cors from 'cors';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 import * as morgan from 'morgan';
 import { env } from '../config/env';
 import { logger } from '../logger/logger';
@@ -18,11 +18,11 @@ import { investmentCardRoutes } from '../routes/investmentCard.routes';
 const app: Application = express();
 
 // Security middleware
-app.use(helmet());
+app.use((helmet as any)());
 
 // CORS configuration - Allow all origins for development
 app.use(
-  cors({
+  cors.default({
     origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Logging middleware
 app.use(
-  morgan(':method :url :status :response-time ms - :res[content-length]', {
+  morgan.default(':method :url :status :response-time ms - :res[content-length]', {
     stream: {
       write: (message: string) => logger.http(message.trim()),
     },
