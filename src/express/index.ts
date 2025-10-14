@@ -1,4 +1,5 @@
-import express, { Application } from 'express';
+import * as express from 'express';
+import { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
