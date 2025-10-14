@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blend-backend-config
+  namespace: blend-backend
+data:
+  NODE_ENV: "production"
+  PORT: "5050"
+  LOG_LEVEL: "info"
+  CORS_ORIGIN: "*"
+  JWT_EXPIRES_IN: "7d"
+  # Database connection will be set via environment variables from secrets

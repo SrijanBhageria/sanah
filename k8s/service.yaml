@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: blend-backend-service
+  namespace: blend-backend
+  labels:
+    app: blend-backend
+spec:
+  selector:
+    app: blend-backend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 5050
+    protocol: TCP
+  type: ClusterIP

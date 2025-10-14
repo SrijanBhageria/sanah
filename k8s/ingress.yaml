@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blend-backend-ingress
+  namespace: blend-backend
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: blend-backend-headers@kubernetescrd
+spec:
+  rules:
+  - host: api.blend.local  # Change this to your actual domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: blend-backend-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - api.blend.local  # Change this to your actual domain
+    secretName: blend-backend-tls

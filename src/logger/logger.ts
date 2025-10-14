@@ -23,7 +23,7 @@ const colors = {
 winston.addColors(colors);
 
 // Define which transports the logger must use
-const transports = [
+const transports: winston.transport[] = [
   // Console transport
   new winston.transports.Console({
     level: 'http', // Explicitly set console level to show HTTP logs
@@ -44,24 +44,29 @@ const transports = [
       ),
     ),
   }),
+];
+
+// Add file transports only in development
+if (env.NODE_ENV === 'development') {
   // File transport for errors
-  new winston.transports.File({
+  transports.push(new winston.transports.File({
     filename: 'logs/error.log',
     level: 'error',
     format: winston.format.combine(
       winston.format.timestamp(),
       winston.format.json(),
     ),
-  }),
+  }));
+  
   // File transport for all logs
-  new winston.transports.File({
+  transports.push(new winston.transports.File({
     filename: 'logs/combined.log',
     format: winston.format.combine(
       winston.format.timestamp(),
       winston.format.json(),
     ),
-  }),
-];
+  }));
+}
 
 // Create the logger
 export const logger = winston.createLogger({
@@ -71,10 +76,12 @@ export const logger = winston.createLogger({
   exitOnError: false,
 });
 
-// Create logs directory if it doesn't exist
-import { mkdirSync } from 'fs';
-try {
-  mkdirSync('logs', { recursive: true });
-} catch (_error) {
-  // Directory already exists or other error
+// Create logs directory if it doesn't exist (only in development)
+if (env.NODE_ENV === 'development') {
+  const { mkdirSync } = require('fs');
+  try {
+    mkdirSync('logs', { recursive: true });
+  } catch (_error) {
+    // Directory already exists or other error
+  }
 }

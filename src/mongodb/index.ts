@@ -4,11 +4,11 @@ import { logger } from '../logger/logger';
 import { COLLECTION_CONFIG } from '../models/mongodb';
 
 // Import DAOs
-import { BlogTypeDAO } from '../dao/blogType.dao';
-import { BlogDAO } from '../dao/blog.dao';
-import { PageContentDAO } from '../dao/pageContent.dao';
-import { FooterDAO } from '../dao/footer.dao';
-import { InvestmentCardDAO } from '../dao/investmentCard.dao';
+import { BlogTypeDAO } from '../dao/blogType.dao.js';
+import { BlogDAO } from '../dao/blog.dao.js';
+import { PageContentDAO } from '../dao/pageContent.dao.js';
+import { FooterDAO } from '../dao/footer.dao.js';
+import { InvestmentCardDAO } from '../dao/investmentCard.dao.js';
 
 /**
  * MongoDB connection configuration

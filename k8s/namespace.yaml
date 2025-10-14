@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: blend-backend
+  labels:
+    name: blend-backend
+    app: blend-services

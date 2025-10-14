@@ -1,4 +1,4 @@
-import { connectDB, initializeCollections } from './mongodb/index';
+import { connectDB, initializeCollections } from './mongodb/index.js';
 import { logger } from './logger/logger';
 
 /**
