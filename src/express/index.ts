@@ -1,12 +1,16 @@
 import * as express from 'express';
 import { Application } from 'express';
-import * as cors from 'cors';
+import cors from 'cors';
 import helmet from 'helmet';
-import * as morgan from 'morgan';
+import morgan from 'morgan';
 import { env } from '../config/env';
 import { logger } from '../logger/logger';
 import { errorHandler, notFoundHandler } from '../middleware/error.middleware';
 import { auditLogger } from '../middleware/audit.middleware';
+import blogRoutes from '../routes/blog.routes';
+import pageContentRoutes from '../routes/pageContent.routes';
+import { footerRoutes } from '../routes/footer.routes';
+import { investmentCardRoutes } from '../routes/investmentCard.routes';
 
 /**
  * Express application setup
@@ -51,12 +55,6 @@ app.get('/health', (_req, res) => {
     environment: env.NODE_ENV,
   });
 });
-
-// Import routes
-import blogRoutes from '../routes/blog.routes';
-import pageContentRoutes from '../routes/pageContent.routes';
-import { footerRoutes } from '../routes/footer.routes';
-import { investmentCardRoutes } from '../routes/investmentCard.routes';
 
 // API routes
 app.use('/blog', blogRoutes);
