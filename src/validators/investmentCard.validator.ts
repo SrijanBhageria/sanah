@@ -1,4 +1,4 @@
-import joi from 'joi';
+import * as joi from 'joi';
 
 /**
  * Section validator for investment card sections
