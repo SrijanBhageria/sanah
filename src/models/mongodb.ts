@@ -10,7 +10,6 @@ export enum MongoCollection {
   BLOGS = 'blogs',
   PAGE_CONTENT = 'page_content',
   FOOTER = 'footer',
-  INVESTMENT_CARDS = 'investment_cards',
 }
 
 /**
@@ -528,87 +527,6 @@ export const COLLECTION_CONFIG: CollectionInit[] = [
         console.log('✅ Default footer content created successfully');
       } else {
         console.log('ℹ️  Footer content already exists, skipping default data creation');
-      }
-    },
-  },
-  {
-    name: MongoCollection.INVESTMENT_CARDS,
-    createIndexes: async () => {
-      // Indexes are created in the model schema
-    },
-    initializeDefaultData: async () => {
-      const { investmentCardDAO } = await import('../mongodb/index');
-      
-      // Check if investment cards already exist
-      const existingCards = await investmentCardDAO.getAllInvestmentCards();
-      
-      if (existingCards.length === 0) {
-        // Create sample investment cards
-        const sampleCards = [
-          {
-            companyName: '100ms',
-            companyLogo: 'https://example.com/100ms-logo.png',
-            sections: [
-              {
-                sectionId: '550e8400-e29b-41d4-a716-446655440001',
-                title: 'DESCRIPTION',
-                content: 'Live-video infrastructure for developers',
-                order: 1
-              },
-              {
-                sectionId: '550e8400-e29b-41d4-a716-446655440002',
-                title: 'FOUNDERS',
-                content: [
-                  { item: 'Kshitij Gupta' },
-                  { item: 'Aniket Behera' },
-                  { item: 'Sarvesh Dwivedi' }
-                ],
-                order: 2
-              },
-              {
-                sectionId: '550e8400-e29b-41d4-a716-446655440003',
-                title: 'INITIAL INVESTMENT',
-                content: 'Seed in 2021',
-                order: 3
-              }
-            ]
-          },
-          {
-            companyName: 'TechCorp',
-            companyLogo: 'https://example.com/techcorp-logo.png',
-            sections: [
-              {
-                sectionId: '550e8400-e29b-41d4-a716-446655440004',
-                title: 'DESCRIPTION',
-                content: 'AI-powered business solutions',
-                order: 1
-              },
-              {
-                sectionId: '550e8400-e29b-41d4-a716-446655440005',
-                title: 'KEY FEATURES',
-                content: [
-                  { item: 'Machine Learning' },
-                  { item: 'Data Analytics' },
-                  { item: 'Automation' }
-                ],
-                order: 2
-              },
-              {
-                sectionId: '550e8400-e29b-41d4-a716-446655440006',
-                title: 'MARKET POSITION',
-                content: 'Series A funding completed. Leading provider of AI solutions for enterprise customers with strong growth trajectory.',
-                order: 3
-              }
-            ]
-          }
-        ];
-        
-        for (const cardData of sampleCards) {
-          await investmentCardDAO.createOrUpdateInvestmentCard(cardData);
-        }
-        console.log('✅ Sample investment cards created successfully');
-      } else {
-        console.log('ℹ️  Investment cards already exist, skipping default data creation');
       }
     },
   },

@@ -10,7 +10,6 @@ import { auditLogger } from '../middleware/audit.middleware';
 import blogRoutes from '../routes/blog.routes';
 import pageContentRoutes from '../routes/pageContent.routes';
 import { footerRoutes } from '../routes/footer.routes';
-import { investmentCardRoutes } from '../routes/investmentCard.routes';
 
 /**
  * Express application setup
@@ -56,11 +55,12 @@ app.get('/health', (_req, res) => {
   });
 });
 
+
+
 // API routes
 app.use('/blog', blogRoutes);
 app.use('/page', pageContentRoutes);
 app.use('/footer', footerRoutes);
-app.use('/cards', investmentCardRoutes);
 
 // 404 handler
 app.use(notFoundHandler);
